@@ -2,6 +2,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 
+import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
@@ -16,11 +17,6 @@ export async function POST(req: Request) {
     const svix_timestamp = headerPayload.get('svix-timestamp')
     const svix_signature = headerPayload.get('svix-signature')
 
-    console.log({
-        svix_id,
-        svix_timestamp,
-        svix_signature
-    })
     if (!svix_id || !svix_timestamp || !svix_signature) {
         return new Response('Error: Headers missing svix headers', {
             status: 400
@@ -50,8 +46,50 @@ export async function POST(req: Request) {
     const { id } = evt.data
     const eventType = evt.type
 
-    console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-    console.log('Webhook body', body)
+    console.log({
+        uname: payload.data.username,
+        test: payload.data.username,
+        eUid: payload.data.id,
+        iUrl: payload.data.image_url,
+    })
+
+    // return new Response('', {status: 200});
+    
+    if (eventType === 'user.created') {
+        await db.user.create({
+            data: {
+                externalUserId: payload.data.id,
+                username: payload.data.username,
+                imageUrl: payload.data.image_url
+            }
+        })
+    } else if (eventType === 'user.updated') {
+        const currUser = await db.user.findUnique({
+            where: {
+                externalUserId: payload.data.id
+            }
+        })
+
+        if (!currUser) {
+            return new Response('User not found.', {status: 404})
+        }
+
+        await db.user.update({
+            where: {
+                externalUserId: payload.data.id
+            },
+            data: {
+                imageUrl: payload.data.image_url,
+                username: payload.data.username
+            }
+        })
+    } else if (eventType === 'user.deleted') {
+        await db.user.delete({
+            where: {
+                externalUserId: payload.data.id
+            }
+        })
+    }
 
     return new Response('', {status: 200})
 }
