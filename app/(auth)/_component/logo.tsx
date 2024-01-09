@@ -16,15 +16,15 @@ export const Logo = () => {
                 <Image src="/spooky.svg"
                     height={80}
                     width={80}
-                    alt='twitch'
+                    alt='YouStream'
                 />
             </div>
             <div className={cn(
                 'flex flex-col items-center',
                 font.className
             )}>
-                <p className="text-xl font-semibold">
-                    Gameh
+                <p className="text-xl font-semibold text-white">
+                    YouStream sfsdfsd
                 </p>
                 <p className="text-sm text-muted-foreground">
                     Let&apos;s Play

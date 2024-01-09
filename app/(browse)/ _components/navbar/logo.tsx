@@ -27,6 +27,14 @@ export const Logo = () => {
                         height={32}
                     />
                 </div>
+                <div className={cn(font.className)}>
+                    <p className='text-lg font-semibold'>
+                        YouStream
+                    </p>
+                    <p className='text-xd text-muted-foreground'>
+                        Let&apos;s Play
+                    </p>
+                </div>
 
             </div>
         </Link>

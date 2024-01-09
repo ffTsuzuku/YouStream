@@ -1,4 +1,5 @@
 import { Logo } from "./logo"
+import { Search } from "./search"
 
 interface Props {
     children: React.ReactNode
@@ -12,6 +13,7 @@ export const Navbar = () => {
             shadow-sm"
         >
             <Logo />
+            <Search />
         </nav>
     )
 }
